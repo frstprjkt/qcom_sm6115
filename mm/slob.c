@@ -320,7 +320,7 @@ static void *slob_alloc(size_t size, gfp_t gfp, int align, int node)
 		sp = virt_to_page(b);
 		__SetPageSlab(sp);
 
-		spin_lock_irqsave(&slob_lock, flags);
+		raw_spin_lock_irqsave(&slob_lock, flags);
 		sp->units = SLOB_UNITS(PAGE_SIZE);
 		sp->freelist = b;
 		INIT_LIST_HEAD(&sp->lru);
@@ -328,7 +328,7 @@ static void *slob_alloc(size_t size, gfp_t gfp, int align, int node)
 		set_slob_page_free(sp, slob_list);
 		b = slob_page_alloc(sp, size, align);
 		BUG_ON(!b);
-		spin_unlock_irqrestore(&slob_lock, flags);
+		raw_spin_unlock_irqrestore(&slob_lock, flags);
 	}
 	if (unlikely(gfp & __GFP_ZERO))
 		memset(b, 0, size);
@@ -353,13 +353,13 @@ static void slob_free(void *block, int size)
 	sp = virt_to_page(block);
 	units = SLOB_UNITS(size);
 
-	spin_lock_irqsave(&slob_lock, flags);
+	raw_spin_lock_irqsave(&slob_lock, flags);
 
 	if (sp->units + units == SLOB_UNITS(PAGE_SIZE)) {
 		/* Go directly to page allocator. Do not pass slob allocator */
 		if (slob_page_free(sp))
 			clear_slob_page_free(sp);
-		spin_unlock_irqrestore(&slob_lock, flags);
+		raw_spin_unlock_irqrestore(&slob_lock, flags);
 		__ClearPageSlab(sp);
 		page_mapcount_reset(sp);
 		slob_free_pages(b, 0);
