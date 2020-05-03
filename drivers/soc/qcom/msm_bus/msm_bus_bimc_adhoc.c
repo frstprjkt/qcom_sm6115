@@ -11,7 +11,6 @@
 #include "msm_bus_core.h"
 #include "msm_bus_bimc.h"
 #include "msm_bus_adhoc.h"
-#include <trace/events/trace_msm_bus.h>
 
 /* M_Generic */
 
