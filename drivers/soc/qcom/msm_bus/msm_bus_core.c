@@ -1,3 +1,4 @@
+
 // SPDX-License-Identifier: GPL-2.0-only
 /*
  * Copyright (c) 2010-2016, The Linux Foundation. All rights reserved.
@@ -15,6 +16,9 @@
 #include <linux/msm-bus-board.h>
 #include <linux/msm-bus.h>
 #include "msm_bus_core.h"
+
+#define CREATE_TRACE_POINTS
+#include <trace/events/trace_msm_bus.h>
 
 static atomic_t num_fab = ATOMIC_INIT(0);
 
