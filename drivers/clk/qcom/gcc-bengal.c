@@ -3857,6 +3857,7 @@ static struct platform_driver gcc_bengal_driver = {
 	.driver = {
 		.name = "gcc-bengal",
 		.of_match_table = gcc_bengal_match_table,
+		.probe_type = PROBE_FORCE_SYNCHRONOUS,
 	},
 };
 
