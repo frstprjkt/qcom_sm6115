@@ -515,6 +515,7 @@ static struct platform_driver gpucc_bengal_driver = {
 	.driver = {
 		.name = "bengal-gpucc",
 		.of_match_table = gpucc_bengal_match_table,
+		.probe_type = PROBE_FORCE_SYNCHRONOUS,
 	},
 };
 
