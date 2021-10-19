@@ -709,7 +709,8 @@ OPT_FLAGS := -mllvm -polly \
 	     -mllvm -polly-detect-keep-going \
 	     -mllvm -polly-vectorizer=stripmine \
 	     -mllvm -polly-invariant-load-hoisting \
-	     $(call cc-option, -mllvm -polly-loopfusion-greedy)
+	     $(call cc-option, -mllvm -polly-loopfusion-greedy) \
+	     $(call cc-option, -mllvm -polly-reschedule)
 endif
 endif
 
