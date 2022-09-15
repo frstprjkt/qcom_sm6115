@@ -405,6 +405,7 @@
 			console-size	= <0x100000>;
 			record-size = <0x100000>;
 			pmsg-size = <0x200000>;
+			max-reason = <0x4>;
 		};
 
 		cont_splash_memory: cont_splash_region@5c000000 {
