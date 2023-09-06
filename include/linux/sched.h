@@ -863,7 +863,7 @@ struct task_struct {
 	const struct sched_class	*sched_class;
 	struct sched_entity		se;
 	struct sched_rt_entity		rt;
-	u64				 last_sleep_ts;
+	u64				last_sleep_ts;
 
 	int				boost;
 	u64				boost_period;
