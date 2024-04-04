@@ -560,7 +560,7 @@ static int qcom_cpufreq_hw_read_lut(struct platform_device *pdev,
 			 * means end of table.
 			*/
 			if (i > 0 && c->table[i - 1].frequency ==
-			c->table[i].frequency && prev_cc == core_count) {
+			c->table[i].frequency) {
 				struct cpufreq_frequency_table *prev =
 					&c->table[i - 1];
 
