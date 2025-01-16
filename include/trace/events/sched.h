@@ -1042,10 +1042,8 @@ TRACE_EVENT(sched_cpu_util,
 		__entry->capacity_curr      = capacity_curr_of(cpu);
 		__entry->capacity           = capacity_of(cpu);
 		__entry->capacity_orig      = capacity_orig_of(cpu);
-		__entry->idle_state         = idle_get_state_idx(cpu_rq(cpu));
 		__entry->irqload            = sched_irqload(cpu);
 		__entry->online             = cpu_online(cpu);
-		__entry->isolated           = cpu_isolated(cpu);
 		__entry->reserved           = is_reserved(cpu);
 		__entry->high_irq_load      = sched_cpu_high_irqload(cpu);
 	),
