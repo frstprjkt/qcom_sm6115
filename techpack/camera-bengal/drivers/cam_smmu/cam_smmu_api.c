@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-only
 /*
- * Copyright (c) 2014-2020, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2014-2021, The Linux Foundation. All rights reserved.
  */
 
 #include <linux/module.h>
@@ -2687,13 +2687,14 @@ static int cam_smmu_map_stage2_buffer_and_add_to_list(int idx, int ion_fd,
 	/* add to the list */
 	list_add(&mapping_info->list, &iommu_cb_set.cb_info[idx].smmu_buf_list);
 
+	return 0;
+
 err_unmap_sg:
 	dma_buf_unmap_attachment(attach, table, dma_dir);
 err_detach:
 	dma_buf_detach(dmabuf, attach);
 err_put:
-	if (rc)
-		dma_buf_put(dmabuf);
+	dma_buf_put(dmabuf);
 err_out:
 	return rc;
 }
@@ -2777,17 +2778,13 @@ static int cam_smmu_secure_unmap_buf_and_remove_from_list(
 		struct cam_sec_buff_info *mapping_info,
 		int idx)
 {
-	if (!mapping_info) {
-		CAM_ERR(CAM_SMMU, "Error: List doesn't exist");
-		return -EINVAL;
-	}
 	if ((!mapping_info->buf) || (!mapping_info->table) ||
-	    (!mapping_info->attach)) {
+		(!mapping_info->attach)) {
 		CAM_ERR(CAM_SMMU,
 			"Error: Invalid params dev = %pK, table = %pK",
 			(void *)iommu_cb_set.cb_info[idx].dev,
 			(void *)mapping_info->table);
-		CAM_ERR(CAM_SMMU, "Error: buf = %pK, attach = %pK\n",
+		CAM_ERR(CAM_SMMU, "Error:dma_buf = %pK, attach = %pK\n",
 			(void *)mapping_info->buf,
 			(void *)mapping_info->attach);
 		return -EINVAL;
@@ -2797,8 +2794,8 @@ static int cam_smmu_secure_unmap_buf_and_remove_from_list(
 	mapping_info->attach->dma_map_attrs |= DMA_ATTR_SKIP_CPU_SYNC;
 
 	/* iommu buffer clean up */
-	dma_buf_unmap_attachment(mapping_info->attach, mapping_info->table,
-				 mapping_info->dir);
+	dma_buf_unmap_attachment(mapping_info->attach,
+		mapping_info->table, mapping_info->dir);
 	dma_buf_detach(mapping_info->buf, mapping_info->attach);
 	dma_buf_put(mapping_info->buf);
 	mapping_info->buf = NULL;

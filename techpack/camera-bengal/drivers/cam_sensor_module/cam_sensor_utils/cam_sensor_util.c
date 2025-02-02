@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0-only
 /*
  * Copyright (c) 2017-2019, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2023-2024 Qualcomm Innovation Center, Inc. All rights reserved.
  */
 
 #include <linux/kernel.h>
@@ -274,6 +275,7 @@ static int32_t cam_sensor_get_io_buffer(
 			io_cfg->direction);
 		rc = -EINVAL;
 	}
+	cam_mem_put_cpu_buf(io_cfg->mem_handle[0]);
 	return rc;
 }
 
@@ -721,9 +723,12 @@ int cam_sensor_i2c_command_parser(
 			}
 		}
 		i2c_reg_settings->is_settings_valid = 1;
+		cam_mem_put_cpu_buf(cmd_desc[i].mem_handle);
 	}
+	return rc;
 
 end:
+	cam_mem_put_cpu_buf(cmd_desc[i].mem_handle);
 	return rc;
 }
 
@@ -1153,22 +1158,29 @@ int32_t cam_sensor_update_power_settings(void *cmd_buf,
 	int32_t i = 0, pwr_up = 0, pwr_down = 0;
 	struct cam_sensor_power_setting *pwr_settings;
 	void *ptr = cmd_buf, *scr;
-	struct cam_cmd_power *pwr_cmd = (struct cam_cmd_power *)cmd_buf;
 	struct common_header *cmm_hdr = (struct common_header *)cmd_buf;
+	struct cam_cmd_power *pwr_cmd =
+		kzalloc(sizeof(struct cam_cmd_power), GFP_KERNEL);
+	if (!pwr_cmd)
+		return -ENOMEM;
+	memcpy(pwr_cmd, cmd_buf, sizeof(struct cam_cmd_power));
 
 	if (!pwr_cmd || !cmd_length || cmd_buf_len < (size_t)cmd_length ||
 		cam_sensor_validate(cmd_buf, cmd_buf_len)) {
 		CAM_ERR(CAM_SENSOR, "Invalid Args: pwr_cmd %pK, cmd_length: %d",
 			pwr_cmd, cmd_length);
-		return -EINVAL;
+		rc = -EINVAL;
+		goto free_power_command;
 	}
 
 	power_info->power_setting_size = 0;
 	power_info->power_setting =
 		kzalloc(sizeof(struct cam_sensor_power_setting) *
 			MAX_POWER_CONFIG, GFP_KERNEL);
-	if (!power_info->power_setting)
-		return -ENOMEM;
+	if (!power_info->power_setting) {
+		rc = -ENOMEM;
+		goto free_power_command;
+	}
 
 	power_info->power_down_setting_size = 0;
 	power_info->power_down_setting =
@@ -1178,7 +1190,8 @@ int32_t cam_sensor_update_power_settings(void *cmd_buf,
 		kfree(power_info->power_setting);
 		power_info->power_setting = NULL;
 		power_info->power_setting_size = 0;
-		return -ENOMEM;
+		rc = -ENOMEM;
+		goto free_power_command;
 	}
 
 	while (tot_size < cmd_length) {
@@ -1362,7 +1375,7 @@ int32_t cam_sensor_update_power_settings(void *cmd_buf,
 		}
 	}
 
-	return rc;
+	goto free_power_command;
 free_power_settings:
 	kfree(power_info->power_down_setting);
 	kfree(power_info->power_setting);
@@ -1370,6 +1383,9 @@ free_power_settings:
 	power_info->power_setting = NULL;
 	power_info->power_down_setting_size = 0;
 	power_info->power_setting_size = 0;
+free_power_command:
+	kfree(pwr_cmd);
+	pwr_cmd = NULL;
 	return rc;
 }
 
@@ -1960,7 +1976,6 @@ int cam_sensor_core_power_up(struct cam_sensor_power_ctrl_t *ctrl,
 		case SENSOR_STANDBY:
 		case SENSOR_CUSTOM_GPIO1:
 		case SENSOR_CUSTOM_GPIO2:
-		case SENSOR_VAF:
 			if (no_gpio) {
 				CAM_ERR(CAM_SENSOR, "request gpio failed");
 				goto power_up_failed;
@@ -1986,6 +2001,7 @@ int cam_sensor_core_power_up(struct cam_sensor_power_ctrl_t *ctrl,
 		case SENSOR_VANA:
 		case SENSOR_VDIG:
 		case SENSOR_VIO:
+		case SENSOR_VAF:
 		case SENSOR_VAF_PWDM:
 		case SENSOR_CUSTOM_REG1:
 		case SENSOR_CUSTOM_REG2:
@@ -2089,7 +2105,6 @@ power_up_failed:
 		case SENSOR_STANDBY:
 		case SENSOR_CUSTOM_GPIO1:
 		case SENSOR_CUSTOM_GPIO2:
-		case SENSOR_VAF:
 			if (!gpio_num_info)
 				continue;
 			if (!gpio_num_info->valid
@@ -2102,6 +2117,7 @@ power_up_failed:
 		case SENSOR_VANA:
 		case SENSOR_VDIG:
 		case SENSOR_VIO:
+		case SENSOR_VAF:
 		case SENSOR_VAF_PWDM:
 		case SENSOR_CUSTOM_REG1:
 		case SENSOR_CUSTOM_REG2:
@@ -2256,7 +2272,7 @@ int cam_sensor_util_power_down(struct cam_sensor_power_ctrl_t *ctrl,
 		case SENSOR_STANDBY:
 		case SENSOR_CUSTOM_GPIO1:
 		case SENSOR_CUSTOM_GPIO2:
-		case SENSOR_VAF:
+
 			if (!gpio_num_info->valid[pd->seq_type])
 				continue;
 
@@ -2269,6 +2285,7 @@ int cam_sensor_util_power_down(struct cam_sensor_power_ctrl_t *ctrl,
 		case SENSOR_VANA:
 		case SENSOR_VDIG:
 		case SENSOR_VIO:
+		case SENSOR_VAF:
 		case SENSOR_VAF_PWDM:
 		case SENSOR_CUSTOM_REG1:
 		case SENSOR_CUSTOM_REG2:
