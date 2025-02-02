@@ -1769,7 +1769,7 @@ static int cam_ope_mgr_create_kmd_buf(struct cam_ope_hw_mgr *hw_mgr,
 	prepare_req.frame_process =
 		(struct ope_frame_process *)ope_cmd_buf_addr;
 
-	for (i = 0; i < ope_hw_mgr->num_ope; i++)
+	for (i = 0; i < ope_hw_mgr->num_ope; i++) {
 		rc = hw_mgr->ope_dev_intf[i]->hw_ops.process_cmd(
 			hw_mgr->ope_dev_intf[i]->hw_priv,
 			OPE_HW_PREPARE, &prepare_req, sizeof(prepare_req));
@@ -1777,7 +1777,7 @@ static int cam_ope_mgr_create_kmd_buf(struct cam_ope_hw_mgr *hw_mgr,
 			CAM_ERR(CAM_OPE, "OPE Dev prepare failed: %d", rc);
 			goto end;
 		}
-
+	}
 end:
 	return rc;
 }
@@ -2285,8 +2285,7 @@ static int cam_ope_mgr_process_cmd_desc(struct cam_ope_hw_mgr *hw_mgr,
 		if (rc || !cpu_addr) {
 			CAM_ERR(CAM_OPE, "get cmd buf failed %x",
 				hw_mgr->iommu_hdl);
-			num_cmd_buf = (num_cmd_buf > 0) ?
-				num_cmd_buf-- : 0;
+			num_cmd_buf = (num_cmd_buf > 0) ? (num_cmd_buf - 1) : 0;
 			goto end;
 		}
 		if ((len <= cmd_desc[i].offset) ||
@@ -3590,7 +3589,7 @@ static int cam_ope_mgr_hw_open_u(void *hw_priv, void *fw_download_args)
 	return rc;
 }
 
-static cam_ope_mgr_hw_close_u(void *hw_priv, void *hw_close_args)
+static int cam_ope_mgr_hw_close_u(void *hw_priv, void *hw_close_args)
 {
 	struct cam_ope_hw_mgr *hw_mgr;
 	int rc = 0;
