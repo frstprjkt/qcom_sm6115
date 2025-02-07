@@ -1222,7 +1222,7 @@ static void check_avoid_unnecessary_addr_size(struct check *c, struct dt_info *d
 	if (!node->parent || node->addr_cells < 0 || node->size_cells < 0)
 		return;
 
-	if (get_property(node, "ranges") || !node->children)
+	if (get_property(node, "ranges") || get_property(node, "dma-ranges") || !node->children)
 		return;
 
 	for_each_child(node, child) {
@@ -1232,7 +1232,7 @@ static void check_avoid_unnecessary_addr_size(struct check *c, struct dt_info *d
 	}
 
 	if (!has_reg)
-		FAIL(c, dti, node, "unnecessary #address-cells/#size-cells without \"ranges\" or child \"reg\" property");
+		FAIL(c, dti, node, "unnecessary #address-cells/#size-cells without \"ranges\", \"dma-ranges\" or child \"reg\" property");
 }
 WARNING(avoid_unnecessary_addr_size, check_avoid_unnecessary_addr_size, NULL, &avoid_default_addr_size);
 
@@ -1382,10 +1382,10 @@ struct provider {
 };
 
 static void check_property_phandle_args(struct check *c,
-					  struct dt_info *dti,
-				          struct node *node,
-				          struct property *prop,
-				          const struct provider *provider)
+					struct dt_info *dti,
+					struct node *node,
+					struct property *prop,
+					const struct provider *provider)
 {
 	struct node *root = dti->dt;
 	unsigned int cell, cellsize = 0;
@@ -1401,6 +1401,7 @@ static void check_property_phandle_args(struct check *c,
 		struct node *provider_node;
 		struct property *cellprop;
 		cell_t phandle;
+		unsigned int expected;
 
 		phandle = propval_cell_n(prop, cell);
 		/*
@@ -1450,10 +1451,12 @@ static void check_property_phandle_args(struct check *c,
 			break;
 		}
 
-		if (prop->val.len < ((cell + cellsize + 1) * sizeof(cell_t))) {
+		expected = (cell + cellsize + 1) * sizeof(cell_t);
+		if ((expected <= cell) || prop->val.len < expected) {
 			FAIL_PROP(c, dti, node, prop,
-				  "property size (%d) too small for cell size %d",
+				  "property size (%d) too small for cell size %u",
 				  prop->val.len, cellsize);
+			break;
 		}
 	}
 }
