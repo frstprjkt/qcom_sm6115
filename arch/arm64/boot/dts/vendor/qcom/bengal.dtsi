@@ -401,7 +401,7 @@
 		/* reserve for pstore */
 		pstore: ramoops@64000000 {
 			compatible = "ramoops";
-			reg = <0x0 0x64000000 0x0 0x400000>;
+			reg = <0x0 0xb0000000 0x0 0x400000>;
 			console-size	= <0x100000>;
 			record-size = <0x100000>;
 			pmsg-size = <0x200000>;
