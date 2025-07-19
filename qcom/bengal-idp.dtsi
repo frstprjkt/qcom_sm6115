@@ -216,7 +216,9 @@
 	qcom,bl-pmic-pwm-period-usecs = <100>;
 	qcom,mdss-dsi-bl-min-level = <1>;
 	qcom,mdss-dsi-bl-max-level = <4095>;
-	qcom,platform-reset-gpio = <&tlmm 82 0>;
+	qcom,mdss-brightness-max-level = <4095>;
+	qcom,platform-reset-gpio = <&tlmm 85 0>;
+	qcom,platform-bklight-en-gpio = <&tlmm 99 0>;
 };
 
 &dsi_td4330_truly_v2_cmd {

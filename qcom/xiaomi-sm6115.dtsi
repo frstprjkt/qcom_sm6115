@@ -1,0 +1,164 @@
+#include "bengal-idp.dtsi"
+#include "bengal-idp-pmi632.dtsi"
+#include "bengal-thermal-pmi632-overlay.dtsi"
+
+&tlmm {
+	fpc_reset_int: fpc_reset_int {
+		fpc_reset_low: reset_low {
+			mux {
+				pins = "gpio34";
+				function = "gpio";
+			};
+
+			config {
+				pins = "gpio34";
+				drive-strength = <2>;
+				bias-disable;
+				output-low;
+			};
+		};
+
+		fpc_reset_high: reset_high {
+			mux {
+				pins = "gpio34";
+				function = "gpio";
+			};
+
+			config {
+				pins = "gpio34";
+				drive-strength = <2>;
+				bias-disable;
+				output-high;
+			};
+		};
+
+		fpc_int_low: int_low {
+			mux {
+				pins = "gpio97";
+				function = "gpio";
+			};
+
+			config {
+				pins = "gpio97";
+				drive-strength = <2>;
+				bias-pull-down;
+				input-enable;
+			};
+		};
+	};
+};
+
+&soc {
+	thermal_message: thermal-message {
+		board-sensor = "VIRTUAL-SENSOR";
+	};
+	fpc1020 {
+		compatible = "fpc,fpc1020";
+		interrupt-parent = <&tlmm>;
+		interrupts = <97 0>;
+		fpc,gpio_rst = <&tlmm 34 0x0>;
+		fpc,gpio_irq = <&tlmm 97 0>;
+		fpc,enable-on-boot;
+		pinctrl-names = "fpc1020_reset_reset",
+				"fpc1020_reset_active",
+				"fpc1020_irq_active";
+		pinctrl-0 = <&fpc_reset_low>;
+		pinctrl-1 = <&fpc_reset_high>;
+		pinctrl-2 = <&fpc_int_low>;
+		status = "ok";
+	};
+	goodix_fp {
+		compatible = "goodix,fingerprint";
+		spi-max-frequency = <1000000>;
+		input-device-name = "gf3208";
+		interrupt-parent = <&tlmm>;
+		interrupts = <97 0x0>;
+		fp-gpio-reset   = <&tlmm 34 0>;
+		fp-gpio-irq     = <&tlmm 97 0>;
+		fp-power-en     = <&tlmm 84 0>;
+		status = "ok";
+	};
+
+	xiaomi_touch {
+		compatible = "xiaomi-touch";
+		touch,name = "xiaomi-touch";
+		status = "ok";
+    };
+
+	focalfp {
+		compatible = "focaltech,fingerprint";
+		interrupt-parent = <&tlmm>;
+		interrupts = <0 97 0>;
+		fp,reset_gpio = <&tlmm 34 0x0>;
+		fp,irq_gpio		= <&tlmm 97 0x0>;
+		fp,vdd_gpio		= <&tlmm 84 0>;
+		status = "okay";
+	};
+
+	cdfinger_fingerprint {
+        compatible = "cdfinger,fingerprint";
+		interrupt-parent = <&tlmm>;
+		interrupts = <97 0x0>;
+		cdfinger,reset_gpio = <&tlmm 34 0>;
+		cdfinger,irq_gpio = <&tlmm 97 0>;
+		/*
+		cdfinger,pwr_gpio = <&tlmm 98 0>;
+		vdd-supply = <&pm8937_l6>;
+		*/
+	};
+};
+
+&soc {
+	gpio_ldo_power {
+		compatible = "fm,fm_lan_enable";
+		qcom,fm_lan_enable_pin = <&tlmm 96 0>;
+		pinctrl-names = "fm_pin_active", "fm_pin_sleep";
+		pinctrl-0 = <&fm_pin_active>;
+		pinctrl-1 = <&fm_pin_sleep>;
+	};
+};
+
+&qupv3_se1_i2c {
+	vituralsar@33 {
+		compatible = "virtualsar,sar";
+		reg = <0x33>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <41 0x02>;
+		vituralsar,irq-gpio = <&tlmm 41 0x2008>;
+		status = "ok";
+	};
+
+	aw87359@58 {
+		compatible = "awinic,aw87359_pa";
+		reg = <0x58>;
+		status = "okay";
+	};
+
+	aw87519_pa@59 {
+		compatible = "awinic,aw87519_pa";
+		reg = <0x59>;
+		reset-gpio = <&tlmm 98 0>;
+		pinctrl-names = "aw87519_pa_reset_active", "aw87519_pa_reset_sleep";
+		pinctrl-0 = <&spk_reset_pin_active>;
+		pinctrl-1 = <&spk_reset_pin_sleep>;
+	};
+};
+
+&qupv3_se1_i2c {
+    status = "ok";
+    sgm37603a_bl: sgm37603a_bl@36 {
+        compatible = "qcom,sgm37603a_bl";
+        reg = <0x36>;
+        pinctrl-names = "lcm_power_enable", "lcm_power_disable",
+                        "lcm_reset_enable", "lcm_reset_disable";
+        pinctrl-0 = <&lcm_power_enable_active >;
+    };
+};
+
+&qupv3_se1_i2c {
+    status = "ok";
+    lm36923: lm36923@36 {
+        compatible = "ti,lm36923";
+        reg = <0x36>;
+    };
+};

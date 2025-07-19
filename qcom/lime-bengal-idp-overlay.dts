@@ -1,0 +1,13 @@
+/dts-v1/;
+/plugin/;
+
+#include <dt-bindings/interrupt-controller/arm-gic.h>
+#include "lime.dtsi"
+
+/ {
+	model = "Qualcomm Technologies, Inc. LIME BENGAL IDP";
+	compatible = "qcom,bengal-idp", "qcom,bengal", "qcom,idp";
+	qcom,msm-id = <444 0x10000>;
+	qcom,board-id = <34 0>;
+	qcom,pmic-id = <0x2D 0x25 0x0 0x0>;
+};
