@@ -1,2 +1,26 @@
 #include "xiaomi-sm6115.dtsi"
 #include "camera/lime-camera-sensor-idp.dtsi"
+
+&qupv3_se1_i2c {
+	status = "ok";
+	#address-cells = <1>;
+	#size-cells = <0>;
+	st21nfc: st21nfc@08 {
+		compatible = "st,st21nfc";
+		reg = <0x08>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <70 0>;
+		reset-gpios = <&tlmm 0x45 0x0>;
+		irq-gpios = <&tlmm 0x46 0x0>;
+		clkreq-gpios = <&tlmm 0x56 0x0>;
+		clock-names = "nfc_ref_clk";
+		st,clk_pinctrl;
+		interrupt-names = "nfc_irq";
+		pinctrl-names = "nfc_active", "nfc_suspend";
+		pinctrl-0 = <&nfc_int_active &nfc_enable_active
+				&nfc_clk_req_active>;
+		pinctrl-1 = <&nfc_int_suspend &nfc_enable_suspend
+				&nfc_clk_req_suspend>;
+		status = "ok";
+	};
+};
