@@ -259,7 +259,11 @@
 };
 
 &sde_dsi {
-	qcom,dsi-default-panel = <&dsi_td4330_truly_v2_video>;
+	qcom,dsi-default-panel =
+		<&dsi_td4330_truly_v2_video &dsi_ft8719_truly_v2_video
+		&dsi_ft8720m_xinli_v2_video &dsi_nt36672a_tianma_video
+		&dsi_nt36672a_truly_v2_video &dsi_nt36672d_tianma_v2_video
+		&dsi_nt36672d_xinli_v2_video>;
 };
 
 &tlmm {
