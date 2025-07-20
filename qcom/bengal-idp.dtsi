@@ -97,7 +97,7 @@
 };
 
 &qupv3_se1_i2c {
-	status = "ok";
+	status = "disabled";
 	#address-cells = <1>;
 	#size-cells = <0>;
 	nq@28 {
