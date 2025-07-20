@@ -1,1 +1,2 @@
 #include "xiaomi-sm6115.dtsi"
+#include "camera/lime-camera-sensor-idp.dtsi"
