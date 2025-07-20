@@ -4,7 +4,6 @@
 #include "bengal-audio-overlay.dtsi"
 #include "bengal-thermal-overlay.dtsi"
 #include "bengal-sde-display.dtsi"
-#include "camera/bengal-camera-sensor-idp.dtsi"
 
 &qupv3_se1_i2c {
 	status = "ok";
