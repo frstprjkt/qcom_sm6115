@@ -6,7 +6,7 @@
 #include "bengal-sde-display.dtsi"
 
 &qupv3_se1_i2c {
-	status = "ok";
+	status = "disabled";
 	#include "smb1355.dtsi"
 };
 
