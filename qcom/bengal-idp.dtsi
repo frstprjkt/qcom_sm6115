@@ -220,6 +220,7 @@
 	qcom,platform-bklight-en-gpio = <&tlmm 99 0>;
 };
 
+/*
 &dsi_td4330_truly_v2_cmd {
 	qcom,panel-supply-entries = <&dsi_panel_pwr_supply>;
 	qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_pwm";
@@ -257,6 +258,7 @@
 	qcom,platform-reset-gpio = <&tlmm 82 0>;
 	qcom,platform-en-gpio = <&tlmm 83 0>;
 };
+*/
 
 &sde_dsi {
 	qcom,dsi-default-panel =
@@ -266,6 +268,7 @@
 		&dsi_nt36672d_xinli_v2_video>;
 };
 
+/*
 &tlmm {
 	touch_vdd_default: touch_vdd_default {
 		mux {
@@ -281,6 +284,7 @@
 		};
 	};
 };
+
 
 &soc {
 	touch_vdd: touch_vdd {
@@ -364,3 +368,4 @@
 			 &dsi_r66451_amoled_hd_90hz_cmd>;
 	};
 };
+*/

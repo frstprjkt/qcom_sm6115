@@ -50,6 +50,7 @@
 	status = "disabled";
 };
 
+/*
 &dsi_td4330_truly_v2_video {
 	qcom,platform-bklight-en-gpio = <&pmi632_gpios 6 0>;
 };
@@ -61,4 +62,4 @@
 &dsi_nt36525_truly_video {
 	qcom,platform-bklight-en-gpio = <&pmi632_gpios 6 0>;
 };
-
+*/
