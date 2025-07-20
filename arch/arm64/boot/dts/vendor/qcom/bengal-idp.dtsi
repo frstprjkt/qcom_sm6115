@@ -4,10 +4,9 @@
 #include "bengal-audio-overlay.dtsi"
 #include "bengal-thermal-overlay.dtsi"
 #include "bengal-sde-display.dtsi"
-#include "camera/bengal-camera-sensor-idp.dtsi"
 
 &qupv3_se1_i2c {
-	status = "ok";
+	status = "disabled";
 	#include "smb1355.dtsi"
 };
 
@@ -98,7 +97,7 @@
 };
 
 &qupv3_se1_i2c {
-	status = "ok";
+	status = "disabled";
 	#address-cells = <1>;
 	#size-cells = <0>;
 	nq@28 {
@@ -216,9 +215,12 @@
 	qcom,bl-pmic-pwm-period-usecs = <100>;
 	qcom,mdss-dsi-bl-min-level = <1>;
 	qcom,mdss-dsi-bl-max-level = <4095>;
-	qcom,platform-reset-gpio = <&tlmm 82 0>;
+	qcom,mdss-brightness-max-level = <4095>;
+	qcom,platform-reset-gpio = <&tlmm 85 0>;
+	qcom,platform-bklight-en-gpio = <&tlmm 99 0>;
 };
 
+/*
 &dsi_td4330_truly_v2_cmd {
 	qcom,panel-supply-entries = <&dsi_panel_pwr_supply>;
 	qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_pwm";
@@ -256,11 +258,17 @@
 	qcom,platform-reset-gpio = <&tlmm 82 0>;
 	qcom,platform-en-gpio = <&tlmm 83 0>;
 };
+*/
 
 &sde_dsi {
-	qcom,dsi-default-panel = <&dsi_td4330_truly_v2_video>;
+	qcom,dsi-default-panel =
+		<&dsi_td4330_truly_v2_video &dsi_ft8719_truly_v2_video
+		&dsi_ft8720m_xinli_v2_video &dsi_nt36672a_tianma_video
+		&dsi_nt36672a_truly_v2_video &dsi_nt36672d_tianma_v2_video
+		&dsi_nt36672d_xinli_v2_video>;
 };
 
+/*
 &tlmm {
 	touch_vdd_default: touch_vdd_default {
 		mux {
@@ -276,6 +284,7 @@
 		};
 	};
 };
+
 
 &soc {
 	touch_vdd: touch_vdd {
@@ -359,3 +368,4 @@
 			 &dsi_r66451_amoled_hd_90hz_cmd>;
 	};
 };
+*/

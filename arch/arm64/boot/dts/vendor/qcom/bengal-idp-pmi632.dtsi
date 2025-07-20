@@ -38,7 +38,7 @@
 	pinctrl-0 = <&smb_int_default>;
 	interrupt-parent = <&tlmm>;
 	interrupts = <105 IRQ_TYPE_LEVEL_LOW>;
-	status = "ok";
+	status = "disabled";
 };
 
 &smb1355_charger {
@@ -47,9 +47,10 @@
 	qcom,parallel-mode = <1>;
 	qcom,disable-ctm;
 	qcom,hw-die-temp-mitigation;
-	status = "ok";
+	status = "disabled";
 };
 
+/*
 &dsi_td4330_truly_v2_video {
 	qcom,platform-bklight-en-gpio = <&pmi632_gpios 6 0>;
 };
@@ -61,4 +62,4 @@
 &dsi_nt36525_truly_video {
 	qcom,platform-bklight-en-gpio = <&pmi632_gpios 6 0>;
 };
-
+*/

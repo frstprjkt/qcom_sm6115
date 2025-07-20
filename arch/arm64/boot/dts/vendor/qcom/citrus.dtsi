@@ -1,0 +1,2 @@
+#include "xiaomi-sm6115.dtsi"
+#include "camera/citrus-camera-sensor-idp.dtsi"

@@ -4,6 +4,7 @@
 #include <dt-bindings/interrupt-controller/arm-gic.h>
 #include "bengal-idp.dtsi"
 #include "bengal-idp-pmi632.dtsi"
+#include "camera/bengal-camera-sensor-idp.dtsi"
 
 / {
 	model = "Qualcomm Technologies, Inc. BENGALP IDP";

@@ -1,4 +1,5 @@
 #include "bengal-idp.dtsi"
+#include "camera/bengal-camera-sensor-idp.dtsi"
 
 &led_flash_rear {
 	/delete-property/ flash-source;
