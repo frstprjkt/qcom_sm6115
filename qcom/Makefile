@@ -147,6 +147,17 @@ dtb-$(CONFIG_ARCH_LAGOON) += \
 endif
 
 ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
+ifeq ($(CONFIG_BOARD_CITRUS),y)
+        dtbo-$(CONFIG_BOARD_CITRUS) += \
+                citrus-bengal-idp-overlay.dtbo
+
+citrus-bengal-idp-overlay.dtbo-base := bengal.dtb
+else ifeq ($(CONFIG_BOARD_LIME),y)
+        dtbo-$(CONFIG_BOARD_LIME) += \
+                lime-bengal-idp-overlay.dtbo
+
+lime-bengal-idp-overlay.dtbo-base := bengal.dtb
+else
         dtbo-$(CONFIG_ARCH_BENGAL) += \
                 bengal-rumi-overlay.dtbo \
                 bengal-qrd-overlay.dtbo \
@@ -185,6 +196,7 @@ bengal-iot-idp-usbc-overlay.dtbo-base := bengal-iot.dtb
 bengalp-iot-idp-2gb-overlay.dtbo-base := bengalp-iot-2gb.dtb
 bengalp-iot-idp-usbc-2gb-overlay.dtbo-base := bengalp-iot-2gb.dtb
 bengalp-iot-idp-usbc-overlay.dtbo-base := bengalp-iot.dtb
+endif
 else
 dtb-$(CONFIG_ARCH_BENGAL) += bengal-rumi.dtb \
                 bengal-qrd.dtb \
